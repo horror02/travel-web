@@ -1,65 +1,95 @@
 import Image from "next/image";
+import Link from "next/link";
+import PostCard from "@/components/PostCard";
+import { posts, getFeaturedPosts } from "@/data/posts";
 
 export default function Home() {
+  const featured = getFeaturedPosts();
+  const heroPost = featured[0];
+  const remaining = posts.filter((p) => p.id !== heroPost.id);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <main>
+      <section className="relative h-screen min-h-[600px] flex items-end">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src={heroPost.image}
+          alt={heroPost.title}
+          fill
           priority
+          className="object-cover"
+          sizes="100vw"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pb-20 w-full">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {heroPost.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-xs px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4 max-w-3xl">
+            {heroPost.title}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+          <p className="text-stone-300 text-lg max-w-xl leading-relaxed mb-6">
+            {heroPost.description}
+          </p>
+          <div className="flex items-center gap-4 flex-wrap">
+            <Link
+              href={`/posts/${heroPost.id}`}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 text-stone-950 font-semibold rounded-full hover:bg-amber-300 transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Read Story
+              <span>→</span>
+            </Link>
+            <span className="text-stone-400 text-sm">
+              {heroPost.location}, {heroPost.country} ·{" "}
+              {new Date(heroPost.date).toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-stone-800/60 backdrop-blur-sm border-y border-stone-700/50">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-wrap justify-center gap-12">
+          {[
+            { value: "10", label: "Destinations" },
+            { value: "8", label: "Countries" },
+            { value: "5", label: "Continents" },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="text-3xl font-bold text-amber-400">{stat.value}</div>
+              <div className="text-stone-400 text-sm mt-1">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="posts" className="max-w-6xl mx-auto px-6 py-20">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-amber-400 text-sm font-medium tracking-widest uppercase mb-2">
+              Travel Journal
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">All Stories</h2>
+          </div>
+          <p className="text-stone-500 text-sm hidden md:block">
+            {posts.length} posts
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {remaining.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
