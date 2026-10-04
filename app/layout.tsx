@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
-
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Jericho Travels",
@@ -20,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-stone-950 text-white antialiased">
+    <html lang="en" className="h-full">
+      <body className="min-h-full flex flex-col antialiased">
         <Navbar />
-        <div className="flex-1 pt-16">{children}</div>
+        <div className="flex-1">{children}</div>
         <Footer />
       </body>
     </html>
